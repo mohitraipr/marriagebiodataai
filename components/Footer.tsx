@@ -83,8 +83,8 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm text-gray-600">
                 <Mail className="h-4 w-4" />
-                <a href="mailto:support@marriagebiodata.com" className="hover:text-rose-500">
-                  support@marriagebiodata.com
+                <a href="mailto:bhupesh.tiwari6@gmail.com" className="hover:text-rose-500">
+                  bhupesh.tiwari6@gmail.com
                 </a>
               </li>
               <li className="flex items-center gap-2 text-sm text-gray-600">

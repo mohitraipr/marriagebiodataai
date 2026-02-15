@@ -21,6 +21,14 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Download,
   FileImage,
   FileText,
@@ -32,6 +40,8 @@ import {
   Eye,
   Loader2,
   CheckCircle2,
+  Settings,
+  Unlock,
 } from "lucide-react";
 import {
   languages,
@@ -59,8 +69,21 @@ export default function CreateBiodataPage() {
   const [formData, setFormData] = useState<FormData>({});
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [testMode, setTestMode] = useState(false);
+  const [testCode, setTestCode] = useState("");
+  const [testCodeDialogOpen, setTestCodeDialogOpen] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleTestCodeSubmit = () => {
+    if (testCode === "mohit@k1510") {
+      setTestMode(true);
+      setTestCodeDialogOpen(false);
+      setTestCode("");
+    } else {
+      alert("Invalid code");
+    }
+  };
 
   const handleInputChange = useCallback((fieldId: string, value: string) => {
     setFormData((prev) => ({ ...prev, [fieldId]: value }));
@@ -180,8 +203,14 @@ export default function CreateBiodataPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <section className="bg-gradient-to-r from-rose-500 to-orange-500 py-8">
+      <section className="bg-gradient-to-r from-rose-500 to-orange-500 py-8 relative">
         <div className="container mx-auto px-4 text-center">
+          {testMode && (
+            <Badge className="mb-2 bg-green-500 text-white">
+              <Unlock className="h-3 w-3 mr-1" />
+              TEST MODE ACTIVE - Free Downloads Enabled
+            </Badge>
+          )}
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
             Create Your Marriage Biodata
           </h1>
@@ -189,6 +218,34 @@ export default function CreateBiodataPage() {
             Fill in your details, choose a template, and download instantly
           </p>
         </div>
+        {/* Hidden Test Mode Trigger */}
+        <Dialog open={testCodeDialogOpen} onOpenChange={setTestCodeDialogOpen}>
+          <DialogTrigger asChild>
+            <button className="absolute bottom-2 right-2 p-1 opacity-20 hover:opacity-60 transition-opacity">
+              <Settings className="h-4 w-4 text-white" />
+            </button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Developer Mode</DialogTitle>
+              <DialogDescription>
+                Enter the test code to unlock all features for testing.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <Input
+                placeholder="Enter test code"
+                value={testCode}
+                onChange={(e) => setTestCode(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleTestCodeSubmit()}
+              />
+              <Button onClick={handleTestCodeSubmit} className="w-full">
+                <Unlock className="mr-2 h-4 w-4" />
+                Unlock Test Mode
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </section>
 
       <div className="container mx-auto px-4 py-8">
@@ -638,20 +695,39 @@ export default function CreateBiodataPage() {
               )}
 
               {/* Pricing Info */}
-              <Card className="mt-4 border-rose-200 bg-rose-50">
-                <CardContent className="pt-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold">Premium Download</p>
-                      <p className="text-sm text-gray-600">High-quality PNG & PDF</p>
+              {testMode ? (
+                <Card className="mt-4 border-green-300 bg-green-50">
+                  <CardContent className="pt-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold text-green-700">Test Mode Active</p>
+                        <p className="text-sm text-green-600">All downloads are free</p>
+                      </div>
+                      <div className="text-right">
+                        <Badge className="bg-green-500 text-white">
+                          <Unlock className="h-3 w-3 mr-1" />
+                          Unlocked
+                        </Badge>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-rose-500">₹49</p>
-                      <p className="text-xs text-gray-500">one-time</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card className="mt-4 border-rose-200 bg-rose-50">
+                  <CardContent className="pt-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold">Premium Download</p>
+                        <p className="text-sm text-gray-600">High-quality PNG & PDF</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-rose-500">₹49</p>
+                        <p className="text-xs text-gray-500">one-time</p>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         </div>

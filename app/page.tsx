@@ -17,6 +17,13 @@ import {
   FileText,
   Users,
   CheckCircle2,
+  User,
+  Phone,
+  MapPin,
+  Briefcase,
+  GraduationCap,
+  AlertCircle,
+  XCircle,
 } from "lucide-react";
 
 const features = [
@@ -199,6 +206,211 @@ export default function HomePage() {
                 </Card>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Biodata Preview Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+            {/* Preview Card */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="order-2 lg:order-1"
+            >
+              <div className="relative">
+                <div className="absolute -inset-4 bg-gradient-to-r from-rose-500/20 to-orange-500/20 rounded-xl blur-xl"></div>
+                <div className="relative bg-white rounded-lg border-4 border-rose-200 shadow-2xl p-6 max-w-sm mx-auto">
+                  {/* Mini Biodata Preview */}
+                  <div className="text-center mb-4">
+                    <div className="text-3xl mb-2">🙏</div>
+                    <p className="text-rose-600 font-serif text-sm italic">|| Shree Ganeshay Namah ||</p>
+                  </div>
+                  <h3 className="text-center text-xl font-bold text-rose-700 border-b-2 border-rose-200 pb-2 mb-4">BIODATA</h3>
+
+                  {/* Photo placeholder */}
+                  <div className="float-right ml-4 mb-2">
+                    <div className="w-20 h-24 bg-gray-100 border-2 border-rose-200 rounded flex items-center justify-center">
+                      <User className="w-10 h-10 text-gray-400" />
+                    </div>
+                  </div>
+
+                  {/* Sample details */}
+                  <div className="text-sm space-y-1.5 text-gray-700">
+                    <p><span className="font-semibold text-rose-700">Name:</span> Priya Sharma</p>
+                    <p><span className="font-semibold text-rose-700">Date of Birth:</span> 15 March 1995</p>
+                    <p><span className="font-semibold text-rose-700">Height:</span> 5&apos;4&quot;</p>
+                    <p><span className="font-semibold text-rose-700">Education:</span> MBA</p>
+                    <p><span className="font-semibold text-rose-700">Occupation:</span> Manager</p>
+                    <p><span className="font-semibold text-rose-700">Rashi:</span> Simha (Leo)</p>
+                  </div>
+
+                  <div className="clear-both"></div>
+
+                  <div className="mt-4 pt-3 border-t border-rose-100 text-sm">
+                    <p className="font-semibold text-rose-700 mb-1">Family Details:</p>
+                    <p className="text-gray-600 text-xs">Father: Mr. Rajesh Sharma (Business)</p>
+                    <p className="text-gray-600 text-xs">Mother: Mrs. Sunita Sharma (Homemaker)</p>
+                  </div>
+
+                  <div className="mt-3 pt-3 border-t border-rose-100 flex items-center gap-2 text-xs text-gray-500">
+                    <Phone className="h-3 w-3" /> +91 98XXX XXXXX
+                    <MapPin className="h-3 w-3 ml-2" /> Delhi, India
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Text Content */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="order-1 lg:order-2"
+            >
+              <Badge className="mb-4 bg-rose-100 text-rose-700 hover:bg-rose-100">
+                <FileText className="h-3 w-3 mr-1" />
+                Marriage Biodata
+              </Badge>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Create Stunning Biodata in{" "}
+                <span className="text-rose-500">5 Minutes</span>
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Our easy-to-use biodata maker helps you create professional marriage biodatas
+                with beautiful templates. Add your photo, personal details, family information,
+                and download instantly.
+              </p>
+              <ul className="space-y-3 mb-6">
+                {[
+                  "8+ professionally designed templates",
+                  "Upload your photo with perfect sizing",
+                  "Available in 9 Indian languages",
+                  "Download as PNG or PDF instantly",
+                  "Add family, education & contact details",
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button asChild size="lg" className="bg-gradient-to-r from-rose-500 to-orange-500">
+                <Link href="/create">
+                  Create Your Biodata <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Kundli Milan Preview Section */}
+      <section className="py-20 bg-gradient-to-br from-orange-50 to-rose-50">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+            {/* Text Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+            >
+              <Badge className="mb-4 bg-orange-100 text-orange-700 hover:bg-orange-100">
+                <Heart className="h-3 w-3 mr-1" />
+                Kundli Milan
+              </Badge>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Check Your{" "}
+                <span className="text-orange-500">Horoscope Match</span>
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Discover your compatibility with our accurate Ashtakoot Gun Milan calculator.
+                Get detailed analysis of all 8 aspects with a maximum score of 36 points.
+              </p>
+              <ul className="space-y-3 mb-6">
+                {[
+                  "Complete 36-point Ashtakoot analysis",
+                  "8 Koot analysis: Varna, Vashya, Tara & more",
+                  "Instant compatibility score",
+                  "Detailed breakdown with explanations",
+                  "Recommendations based on score",
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button asChild size="lg" className="bg-gradient-to-r from-orange-500 to-rose-500">
+                <Link href="/kundli-milan">
+                  Check Compatibility <Heart className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </motion.div>
+
+            {/* Kundli Preview Card */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+            >
+              <div className="relative">
+                <div className="absolute -inset-4 bg-gradient-to-r from-orange-500/20 to-rose-500/20 rounded-xl blur-xl"></div>
+                <div className="relative bg-white rounded-xl shadow-2xl overflow-hidden max-w-sm mx-auto">
+                  {/* Score Header */}
+                  <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-6 text-white text-center">
+                    <div className="flex items-center justify-center gap-4 mb-3">
+                      <div className="text-center">
+                        <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-xl">👨</div>
+                        <p className="text-xs mt-1 opacity-80">Rahul</p>
+                      </div>
+                      <Heart className="h-6 w-6 fill-white animate-pulse" />
+                      <div className="text-center">
+                        <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-xl">👩</div>
+                        <p className="text-xs mt-1 opacity-80">Priya</p>
+                      </div>
+                    </div>
+                    <div className="text-5xl font-bold">28/36</div>
+                    <p className="text-lg font-semibold mt-1">Excellent Match!</p>
+                    <p className="text-sm opacity-80">77% Compatible</p>
+                  </div>
+
+                  {/* Sample Gun Scores */}
+                  <div className="p-4 space-y-3">
+                    {[
+                      { name: "Varna", hindi: "वर्ण", score: "1/1", color: "green" },
+                      { name: "Vashya", hindi: "वश्य", score: "2/2", color: "green" },
+                      { name: "Tara", hindi: "तारा", score: "2/3", color: "yellow" },
+                      { name: "Yoni", hindi: "योनि", score: "4/4", color: "green" },
+                    ].map((gun) => (
+                      <div key={gun.name} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          {gun.color === "green" ? (
+                            <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          ) : (
+                            <AlertCircle className="h-4 w-4 text-yellow-500" />
+                          )}
+                          <span className="text-sm font-medium">{gun.name} ({gun.hindi})</span>
+                        </div>
+                        <span className={`text-sm font-bold ${gun.color === "green" ? "text-green-600" : "text-yellow-600"}`}>
+                          {gun.score}
+                        </span>
+                      </div>
+                    ))}
+                    <div className="pt-2 border-t">
+                      <p className="text-xs text-gray-500 text-center">+ 4 more aspects analyzed...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>

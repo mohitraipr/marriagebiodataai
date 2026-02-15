@@ -15,6 +15,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Heart,
   CheckCircle2,
   XCircle,
@@ -24,6 +32,8 @@ import {
   RefreshCw,
   User,
   Users,
+  Settings,
+  Unlock,
 } from "lucide-react";
 import { rashiData, nakshatraData } from "@/lib/biodata-config";
 import { calculateKundliMilan, KundliResult, KundliInput } from "@/lib/kundli-calculator";
@@ -33,6 +43,19 @@ export default function KundliMilanPage() {
   const [girlData, setGirlData] = useState<KundliInput>({ name: "", rashi: "", nakshatra: 0 });
   const [result, setResult] = useState<KundliResult | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
+  const [testMode, setTestMode] = useState(false);
+  const [testCode, setTestCode] = useState("");
+  const [testCodeDialogOpen, setTestCodeDialogOpen] = useState(false);
+
+  const handleTestCodeSubmit = () => {
+    if (testCode === "mohit@k1510") {
+      setTestMode(true);
+      setTestCodeDialogOpen(false);
+      setTestCode("");
+    } else {
+      alert("Invalid code");
+    }
+  };
 
   const handleCalculate = () => {
     if (!boyData.rashi || !boyData.nakshatra || !girlData.rashi || !girlData.nakshatra) {
@@ -64,8 +87,14 @@ export default function KundliMilanPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <section className="bg-gradient-to-r from-rose-500 to-orange-500 py-12">
+      <section className="bg-gradient-to-r from-rose-500 to-orange-500 py-12 relative">
         <div className="container mx-auto px-4 text-center">
+          {testMode && (
+            <Badge className="mb-2 bg-green-500 text-white">
+              <Unlock className="h-3 w-3 mr-1" />
+              TEST MODE ACTIVE - Free Reports Enabled
+            </Badge>
+          )}
           <Badge className="mb-4 bg-white/20 text-white hover:bg-white/20">
             <Heart className="h-3 w-3 mr-1 fill-white" />
             Ashtakoot Gun Milan
@@ -78,6 +107,34 @@ export default function KundliMilanPage() {
             Get instant results with compatibility score and recommendations.
           </p>
         </div>
+        {/* Hidden Test Mode Trigger */}
+        <Dialog open={testCodeDialogOpen} onOpenChange={setTestCodeDialogOpen}>
+          <DialogTrigger asChild>
+            <button className="absolute bottom-2 right-2 p-1 opacity-20 hover:opacity-60 transition-opacity">
+              <Settings className="h-4 w-4 text-white" />
+            </button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Developer Mode</DialogTitle>
+              <DialogDescription>
+                Enter the test code to unlock all features for testing.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <Input
+                placeholder="Enter test code"
+                value={testCode}
+                onChange={(e) => setTestCode(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleTestCodeSubmit()}
+              />
+              <Button onClick={handleTestCodeSubmit} className="w-full">
+                <Unlock className="mr-2 h-4 w-4" />
+                Unlock Test Mode
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </section>
 
       <div className="container mx-auto px-4 py-8">
@@ -333,25 +390,44 @@ export default function KundliMilanPage() {
               </Button>
               <Button className="flex-1 bg-gradient-to-r from-rose-500 to-orange-500">
                 <Download className="mr-2 h-4 w-4" />
-                Download Report (₹10)
+                {testMode ? "Download Report (Free)" : "Download Report (₹10)"}
               </Button>
             </div>
 
             {/* Pricing Info */}
-            <Card className="mt-6 border-rose-200 bg-rose-50">
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold">Get Detailed PDF Report</p>
-                    <p className="text-sm text-gray-600">Complete analysis with remedies</p>
+            {testMode ? (
+              <Card className="mt-6 border-green-300 bg-green-50">
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold text-green-700">Test Mode Active</p>
+                      <p className="text-sm text-green-600">All downloads are free</p>
+                    </div>
+                    <div className="text-right">
+                      <Badge className="bg-green-500 text-white">
+                        <Unlock className="h-3 w-3 mr-1" />
+                        Unlocked
+                      </Badge>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-rose-500">₹10</p>
-                    <p className="text-xs text-gray-500">one-time</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="mt-6 border-rose-200 bg-rose-50">
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold">Get Detailed PDF Report</p>
+                      <p className="text-sm text-gray-600">Complete analysis with remedies</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-rose-500">₹10</p>
+                      <p className="text-xs text-gray-500">one-time</p>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
           </motion.div>
         )}
       </div>
