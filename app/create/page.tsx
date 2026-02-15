@@ -42,6 +42,8 @@ import {
   CheckCircle2,
   Settings,
   Unlock,
+  Sparkles,
+  Lock,
 } from "lucide-react";
 import {
   languages,
@@ -548,7 +550,7 @@ export default function CreateBiodataPage() {
                   {/* Biodata Preview */}
                   <div
                     ref={previewRef}
-                    className="w-full aspect-[1/1.414] rounded-lg overflow-hidden shadow-lg"
+                    className="w-full aspect-[1/1.414] rounded-lg overflow-hidden shadow-lg relative"
                     style={{
                       backgroundColor: selectedTemplate.bgColor,
                       border: `4px solid ${selectedTemplate.borderColor}`,
@@ -587,8 +589,8 @@ export default function CreateBiodataPage() {
 
                         {/* Details */}
                         <div className="flex-1 space-y-2 overflow-hidden" style={{ color: selectedTemplate.textColor }}>
-                          {/* Personal */}
-                          {(formData.name || formData.dob || formData.education) && (
+                          {/* Personal - VISIBLE SECTION (Name, DOB, Height, Education) */}
+                          {(formData.name || formData.dob || formData.height || formData.education) && (
                             <div>
                               <h3
                                 className="font-bold pb-0.5 mb-1 border-b text-xs"
@@ -599,59 +601,80 @@ export default function CreateBiodataPage() {
                               <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
                                 {formData.name && <div><span className="font-semibold">Name:</span> {formData.name}</div>}
                                 {formData.dob && <div><span className="font-semibold">DOB:</span> {formData.dob}</div>}
-                                {formData.timeOfBirth && <div><span className="font-semibold">Birth Time:</span> {formData.timeOfBirth}</div>}
-                                {formData.placeOfBirth && <div><span className="font-semibold">Birth Place:</span> {formData.placeOfBirth}</div>}
-                                {formData.religion && <div><span className="font-semibold">Religion:</span> {formData.religion}</div>}
-                                {formData.caste && <div><span className="font-semibold">Caste:</span> {formData.caste}</div>}
-                                {formData.gotra && <div><span className="font-semibold">Gotra:</span> {formData.gotra}</div>}
-                                {formData.rashi && <div><span className="font-semibold">Rashi:</span> {formData.rashi}</div>}
-                                {formData.nakshatra && <div><span className="font-semibold">Nakshatra:</span> {formData.nakshatra}</div>}
                                 {formData.height && <div><span className="font-semibold">Height:</span> {formData.height}</div>}
-                                {formData.complexion && <div><span className="font-semibold">Complexion:</span> {formData.complexion}</div>}
-                                {formData.bloodGroup && <div><span className="font-semibold">Blood:</span> {formData.bloodGroup}</div>}
                                 {formData.education && <div><span className="font-semibold">Education:</span> {formData.education}</div>}
-                                {formData.occupation && <div><span className="font-semibold">Occupation:</span> {formData.occupation}</div>}
-                                {formData.income && <div><span className="font-semibold">Income:</span> {formData.income}</div>}
                               </div>
                             </div>
                           )}
 
-                          {/* Family */}
-                          {(formData.fatherName || formData.motherName) && (
-                            <div>
-                              <h3
-                                className="font-bold pb-0.5 mb-1 border-b text-xs"
-                                style={{ borderColor: selectedTemplate.accentColor, color: selectedTemplate.headerBg }}
-                              >
-                                Family Details
-                              </h3>
-                              <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
-                                {formData.fatherName && <div><span className="font-semibold">Father:</span> {formData.fatherName}</div>}
-                                {formData.fatherOccupation && <div><span className="font-semibold">Occupation:</span> {formData.fatherOccupation}</div>}
-                                {formData.motherName && <div><span className="font-semibold">Mother:</span> {formData.motherName}</div>}
-                                {formData.brothers && <div><span className="font-semibold">Brothers:</span> {formData.brothers}</div>}
-                                {formData.sisters && <div><span className="font-semibold">Sisters:</span> {formData.sisters}</div>}
-                                {formData.familyType && <div><span className="font-semibold">Family:</span> {formData.familyType}</div>}
-                              </div>
-                            </div>
-                          )}
+                          {/* BLURRED SECTION - Only blur when NOT in test mode */}
+                          <div className="relative">
+                            <div className={`${!testMode ? "blur-sm select-none pointer-events-none" : ""}`}>
+                              {/* Other Personal Details */}
+                              {(formData.timeOfBirth || formData.placeOfBirth || formData.religion || formData.caste || formData.gotra || formData.rashi || formData.nakshatra || formData.complexion || formData.bloodGroup || formData.occupation || formData.income) && (
+                                <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 mb-2">
+                                  {formData.timeOfBirth && <div><span className="font-semibold">Birth Time:</span> {formData.timeOfBirth}</div>}
+                                  {formData.placeOfBirth && <div><span className="font-semibold">Birth Place:</span> {formData.placeOfBirth}</div>}
+                                  {formData.religion && <div><span className="font-semibold">Religion:</span> {formData.religion}</div>}
+                                  {formData.caste && <div><span className="font-semibold">Caste:</span> {formData.caste}</div>}
+                                  {formData.gotra && <div><span className="font-semibold">Gotra:</span> {formData.gotra}</div>}
+                                  {formData.rashi && <div><span className="font-semibold">Rashi:</span> {formData.rashi}</div>}
+                                  {formData.nakshatra && <div><span className="font-semibold">Nakshatra:</span> {formData.nakshatra}</div>}
+                                  {formData.complexion && <div><span className="font-semibold">Complexion:</span> {formData.complexion}</div>}
+                                  {formData.bloodGroup && <div><span className="font-semibold">Blood:</span> {formData.bloodGroup}</div>}
+                                  {formData.occupation && <div><span className="font-semibold">Occupation:</span> {formData.occupation}</div>}
+                                  {formData.income && <div><span className="font-semibold">Income:</span> {formData.income}</div>}
+                                </div>
+                              )}
 
-                          {/* Contact */}
-                          {(formData.mobile || formData.address) && (
-                            <div>
-                              <h3
-                                className="font-bold pb-0.5 mb-1 border-b text-xs"
-                                style={{ borderColor: selectedTemplate.accentColor, color: selectedTemplate.headerBg }}
-                              >
-                                Contact Details
-                              </h3>
-                              <div className="space-y-0.5">
-                                {formData.mobile && <div><span className="font-semibold">Mobile:</span> {formData.mobile}</div>}
-                                {formData.email && <div><span className="font-semibold">Email:</span> {formData.email}</div>}
-                                {formData.address && <div><span className="font-semibold">Address:</span> {formData.address}</div>}
-                              </div>
+                              {/* Family */}
+                              {(formData.fatherName || formData.motherName) && (
+                                <div className="mb-2">
+                                  <h3
+                                    className="font-bold pb-0.5 mb-1 border-b text-xs"
+                                    style={{ borderColor: selectedTemplate.accentColor, color: selectedTemplate.headerBg }}
+                                  >
+                                    Family Details
+                                  </h3>
+                                  <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
+                                    {formData.fatherName && <div><span className="font-semibold">Father:</span> {formData.fatherName}</div>}
+                                    {formData.fatherOccupation && <div><span className="font-semibold">Occupation:</span> {formData.fatherOccupation}</div>}
+                                    {formData.motherName && <div><span className="font-semibold">Mother:</span> {formData.motherName}</div>}
+                                    {formData.brothers && <div><span className="font-semibold">Brothers:</span> {formData.brothers}</div>}
+                                    {formData.sisters && <div><span className="font-semibold">Sisters:</span> {formData.sisters}</div>}
+                                    {formData.familyType && <div><span className="font-semibold">Family:</span> {formData.familyType}</div>}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Contact */}
+                              {(formData.mobile || formData.address) && (
+                                <div>
+                                  <h3
+                                    className="font-bold pb-0.5 mb-1 border-b text-xs"
+                                    style={{ borderColor: selectedTemplate.accentColor, color: selectedTemplate.headerBg }}
+                                  >
+                                    Contact Details
+                                  </h3>
+                                  <div className="space-y-0.5">
+                                    {formData.mobile && <div><span className="font-semibold">Mobile:</span> {formData.mobile}</div>}
+                                    {formData.email && <div><span className="font-semibold">Email:</span> {formData.email}</div>}
+                                    {formData.address && <div><span className="font-semibold">Address:</span> {formData.address}</div>}
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                          )}
+
+                            {/* Blur Overlay with Payment Badge - Only show when NOT in test mode */}
+                            {!testMode && (formData.timeOfBirth || formData.placeOfBirth || formData.religion || formData.fatherName || formData.mobile) && (
+                              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-white/80 flex items-end justify-center pb-2">
+                                <Badge className="bg-rose-500 text-white shadow-lg animate-pulse text-xs">
+                                  <Lock className="h-3 w-3 mr-1" />
+                                  Pay ₹49 to unlock full biodata
+                                </Badge>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
