@@ -239,27 +239,40 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  {/* Sample details */}
+                  {/* Sample details - First 4 visible */}
                   <div className="text-sm space-y-1.5 text-gray-700">
                     <p><span className="font-semibold text-rose-700">Name:</span> Priya Sharma</p>
                     <p><span className="font-semibold text-rose-700">Date of Birth:</span> 15 March 1995</p>
                     <p><span className="font-semibold text-rose-700">Height:</span> 5&apos;4&quot;</p>
                     <p><span className="font-semibold text-rose-700">Education:</span> MBA</p>
-                    <p><span className="font-semibold text-rose-700">Occupation:</span> Manager</p>
-                    <p><span className="font-semibold text-rose-700">Rashi:</span> Simha (Leo)</p>
                   </div>
 
                   <div className="clear-both"></div>
 
-                  <div className="mt-4 pt-3 border-t border-rose-100 text-sm">
-                    <p className="font-semibold text-rose-700 mb-1">Family Details:</p>
-                    <p className="text-gray-600 text-xs">Father: Mr. Rajesh Sharma (Business)</p>
-                    <p className="text-gray-600 text-xs">Mother: Mrs. Sunita Sharma (Homemaker)</p>
-                  </div>
-
-                  <div className="mt-3 pt-3 border-t border-rose-100 flex items-center gap-2 text-xs text-gray-500">
-                    <Phone className="h-3 w-3" /> +91 98XXX XXXXX
-                    <MapPin className="h-3 w-3 ml-2" /> Delhi, India
+                  {/* Blurred section */}
+                  <div className="relative mt-3">
+                    <div className="blur-sm select-none pointer-events-none">
+                      <div className="text-sm space-y-1.5 text-gray-700">
+                        <p><span className="font-semibold text-rose-700">Occupation:</span> Manager</p>
+                        <p><span className="font-semibold text-rose-700">Rashi:</span> Simha (Leo)</p>
+                      </div>
+                      <div className="mt-3 pt-2 border-t border-rose-100 text-sm">
+                        <p className="font-semibold text-rose-700 mb-1">Family Details:</p>
+                        <p className="text-gray-600 text-xs">Father: Mr. Rajesh Sharma</p>
+                        <p className="text-gray-600 text-xs">Mother: Mrs. Sunita Sharma</p>
+                      </div>
+                      <div className="mt-2 pt-2 border-t border-rose-100 flex items-center gap-2 text-xs text-gray-500">
+                        <Phone className="h-3 w-3" /> +91 98XXX XXXXX
+                        <MapPin className="h-3 w-3 ml-2" /> Delhi
+                      </div>
+                    </div>
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white flex items-end justify-center pb-2">
+                      <Badge className="bg-rose-500 text-white shadow-lg animate-pulse">
+                        <Sparkles className="h-3 w-3 mr-1" />
+                        Pay ₹49 to unlock
+                      </Badge>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -382,30 +395,46 @@ export default function HomePage() {
                     <p className="text-sm opacity-80">77% Compatible</p>
                   </div>
 
-                  {/* Sample Gun Scores */}
+                  {/* Sample Gun Scores - First 2 visible */}
                   <div className="p-4 space-y-3">
                     {[
                       { name: "Varna", hindi: "वर्ण", score: "1/1", color: "green" },
                       { name: "Vashya", hindi: "वश्य", score: "2/2", color: "green" },
-                      { name: "Tara", hindi: "तारा", score: "2/3", color: "yellow" },
-                      { name: "Yoni", hindi: "योनि", score: "4/4", color: "green" },
                     ].map((gun) => (
                       <div key={gun.name} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          {gun.color === "green" ? (
-                            <CheckCircle2 className="h-4 w-4 text-green-500" />
-                          ) : (
-                            <AlertCircle className="h-4 w-4 text-yellow-500" />
-                          )}
+                          <CheckCircle2 className="h-4 w-4 text-green-500" />
                           <span className="text-sm font-medium">{gun.name} ({gun.hindi})</span>
                         </div>
-                        <span className={`text-sm font-bold ${gun.color === "green" ? "text-green-600" : "text-yellow-600"}`}>
-                          {gun.score}
-                        </span>
+                        <span className="text-sm font-bold text-green-600">{gun.score}</span>
                       </div>
                     ))}
-                    <div className="pt-2 border-t">
-                      <p className="text-xs text-gray-500 text-center">+ 4 more aspects analyzed...</p>
+
+                    {/* Blurred remaining scores */}
+                    <div className="relative">
+                      <div className="blur-sm select-none pointer-events-none space-y-3">
+                        {[
+                          { name: "Tara", hindi: "तारा", score: "2/3" },
+                          { name: "Yoni", hindi: "योनि", score: "4/4" },
+                          { name: "Graha", hindi: "ग्रह", score: "4/5" },
+                          { name: "Gana", hindi: "गण", score: "5/6" },
+                        ].map((gun) => (
+                          <div key={gun.name} className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-500" />
+                              <span className="text-sm font-medium">{gun.name} ({gun.hindi})</span>
+                            </div>
+                            <span className="text-sm font-bold text-green-600">{gun.score}</span>
+                          </div>
+                        ))}
+                      </div>
+                      {/* Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/70 to-white flex items-end justify-center pb-1">
+                        <Badge className="bg-orange-500 text-white shadow-lg animate-pulse">
+                          <Sparkles className="h-3 w-3 mr-1" />
+                          Pay ₹10 for full report
+                        </Badge>
+                      </div>
                     </div>
                   </div>
                 </div>
