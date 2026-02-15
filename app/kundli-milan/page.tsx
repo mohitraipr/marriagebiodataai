@@ -22,6 +22,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Heart,
   CheckCircle2,
@@ -34,18 +35,102 @@ import {
   Users,
   Settings,
   Unlock,
+  HelpCircle,
+  Zap,
+  BookOpen,
 } from "lucide-react";
 import { rashiData, nakshatraData } from "@/lib/biodata-config";
 import { calculateKundliMilan, KundliResult, KundliInput } from "@/lib/kundli-calculator";
+
+// Helper data for quick rashi-only matching
+const rashiCompatibility: Record<string, string[]> = {
+  aries: ["leo", "sagittarius", "gemini", "aquarius"],
+  taurus: ["virgo", "capricorn", "cancer", "pisces"],
+  gemini: ["libra", "aquarius", "aries", "leo"],
+  cancer: ["scorpio", "pisces", "taurus", "virgo"],
+  leo: ["aries", "sagittarius", "gemini", "libra"],
+  virgo: ["taurus", "capricorn", "cancer", "scorpio"],
+  libra: ["gemini", "aquarius", "leo", "sagittarius"],
+  scorpio: ["cancer", "pisces", "virgo", "capricorn"],
+  sagittarius: ["aries", "leo", "libra", "aquarius"],
+  capricorn: ["taurus", "virgo", "scorpio", "pisces"],
+  aquarius: ["gemini", "libra", "aries", "sagittarius"],
+  pisces: ["cancer", "scorpio", "taurus", "capricorn"],
+};
+
+interface QuickResult {
+  compatible: boolean;
+  message: string;
+  percentage: number;
+}
 
 export default function KundliMilanPage() {
   const [boyData, setBoyData] = useState<KundliInput>({ name: "", rashi: "", nakshatra: 0 });
   const [girlData, setGirlData] = useState<KundliInput>({ name: "", rashi: "", nakshatra: 0 });
   const [result, setResult] = useState<KundliResult | null>(null);
+  const [quickResult, setQuickResult] = useState<QuickResult | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const [testMode, setTestMode] = useState(false);
   const [testCode, setTestCode] = useState("");
   const [testCodeDialogOpen, setTestCodeDialogOpen] = useState(false);
+  const [inputMethod, setInputMethod] = useState<"detailed" | "quick">("detailed");
+
+  // Quick Rashi-based compatibility check
+  const handleQuickCheck = () => {
+    if (!boyData.rashi || !girlData.rashi) {
+      alert("Please select both Rashis");
+      return;
+    }
+
+    setIsCalculating(true);
+    setTimeout(() => {
+      const boyRashi = boyData.rashi.toLowerCase();
+      const girlRashi = girlData.rashi.toLowerCase();
+      const compatibleRashis = rashiCompatibility[boyRashi] || [];
+      const isCompatible = compatibleRashis.includes(girlRashi);
+      const isSameElement = checkSameElement(boyRashi, girlRashi);
+
+      let percentage = 50;
+      let message = "";
+
+      if (boyRashi === girlRashi) {
+        percentage = 70;
+        message = "Same Rashi - Generally good compatibility with similar nature";
+      } else if (isCompatible) {
+        percentage = 85;
+        message = "Excellent! Your Rashis are highly compatible";
+      } else if (isSameElement) {
+        percentage = 65;
+        message = "Good compatibility - Same element connection";
+      } else {
+        percentage = 45;
+        message = "May face some challenges - Consult for detailed analysis";
+      }
+
+      setQuickResult({
+        compatible: percentage >= 60,
+        percentage,
+        message,
+      });
+      setIsCalculating(false);
+    }, 1000);
+  };
+
+  // Check if same element (Fire, Earth, Air, Water)
+  const checkSameElement = (rashi1: string, rashi2: string): boolean => {
+    const fire = ["aries", "leo", "sagittarius"];
+    const earth = ["taurus", "virgo", "capricorn"];
+    const air = ["gemini", "libra", "aquarius"];
+    const water = ["cancer", "scorpio", "pisces"];
+
+    const elements = [fire, earth, air, water];
+    for (const element of elements) {
+      if (element.includes(rashi1) && element.includes(rashi2)) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   const handleTestCodeSubmit = () => {
     if (testCode === "mohit@k1510") {
@@ -75,6 +160,7 @@ export default function KundliMilanPage() {
     setBoyData({ name: "", rashi: "", nakshatra: 0 });
     setGirlData({ name: "", rashi: "", nakshatra: 0 });
     setResult(null);
+    setQuickResult(null);
   };
 
   const getScoreIcon = (obtained: number, max: number) => {
@@ -138,69 +224,174 @@ export default function KundliMilanPage() {
       </section>
 
       <div className="container mx-auto px-4 py-8">
-        {!result ? (
+        {!result && !quickResult ? (
           /* Input Form */
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="max-w-4xl mx-auto"
           >
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Boy's Details */}
-              <Card className="border-blue-200">
-                <CardHeader className="bg-blue-50 rounded-t-lg">
-                  <CardTitle className="flex items-center gap-2 text-blue-700">
-                    <User className="h-5 w-5" />
-                    Boy&apos;s Details (वर)
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6 space-y-4">
-                  <div>
-                    <Label>Name (Optional)</Label>
-                    <Input
-                      placeholder="Enter boy's name"
-                      value={boyData.name}
-                      onChange={(e) => setBoyData({ ...boyData, name: e.target.value })}
-                    />
+            {/* Method Selector */}
+            <Tabs value={inputMethod} onValueChange={(v) => setInputMethod(v as "detailed" | "quick")} className="mb-6">
+              <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
+                <TabsTrigger value="quick" className="flex items-center gap-2">
+                  <Zap className="h-4 w-4" />
+                  Quick Check
+                </TabsTrigger>
+                <TabsTrigger value="detailed" className="flex items-center gap-2">
+                  <BookOpen className="h-4 w-4" />
+                  Detailed Analysis
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Quick Check Tab */}
+              <TabsContent value="quick">
+                <Card className="mb-6">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-2 mb-4 p-3 bg-blue-50 rounded-lg">
+                      <HelpCircle className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                      <div className="text-sm text-blue-700">
+                        <p className="font-medium">Quick Rashi Compatibility</p>
+                        <p>Know your Rashi but not Nakshatra? Use this quick check based on your zodiac sign (राशि) compatibility.</p>
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {/* Boy's Rashi */}
+                      <div>
+                        <Label className="mb-2 block text-blue-700 font-medium">Boy&apos;s Rashi (वर की राशि)</Label>
+                        <Select
+                          value={boyData.rashi}
+                          onValueChange={(value) => setBoyData({ ...boyData, rashi: value })}
+                        >
+                          <SelectTrigger className="border-blue-200">
+                            <SelectValue placeholder="Select Rashi" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {rashiData.map((rashi) => (
+                              <SelectItem key={rashi.id} value={rashi.id}>
+                                {rashi.name} ({rashi.hindi})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Girl's Rashi */}
+                      <div>
+                        <Label className="mb-2 block text-pink-700 font-medium">Girl&apos;s Rashi (कन्या की राशि)</Label>
+                        <Select
+                          value={girlData.rashi}
+                          onValueChange={(value) => setGirlData({ ...girlData, rashi: value })}
+                        >
+                          <SelectTrigger className="border-pink-200">
+                            <SelectValue placeholder="Select Rashi" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {rashiData.map((rashi) => (
+                              <SelectItem key={rashi.id} value={rashi.id}>
+                                {rashi.name} ({rashi.hindi})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-center mt-6">
+                      <Button
+                        size="lg"
+                        onClick={handleQuickCheck}
+                        disabled={isCalculating}
+                        className="bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 px-12"
+                      >
+                        {isCalculating ? (
+                          <>
+                            <Sparkles className="mr-2 h-5 w-5 animate-spin" />
+                            Checking...
+                          </>
+                        ) : (
+                          <>
+                            <Zap className="mr-2 h-5 w-5" />
+                            Quick Check
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <p className="text-center text-sm text-gray-500">
+                  For a more accurate 36-point analysis, use the Detailed Analysis tab with Nakshatra information.
+                </p>
+              </TabsContent>
+
+              {/* Detailed Analysis Tab */}
+              <TabsContent value="detailed">
+                <div className="flex items-start gap-2 mb-4 p-3 bg-amber-50 rounded-lg max-w-2xl mx-auto">
+                  <HelpCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div className="text-sm text-amber-700">
+                    <p className="font-medium">Need help finding your Rashi & Nakshatra?</p>
+                    <p>Your Rashi is based on Moon&apos;s position at birth. Check your Janam Kundli or ask family elders. Nakshatra is your birth star - there are 27 nakshatras in Vedic astrology.</p>
                   </div>
-                  <div>
-                    <Label>Rashi (राशि) *</Label>
-                    <Select
-                      value={boyData.rashi}
-                      onValueChange={(value) => setBoyData({ ...boyData, rashi: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Rashi" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {rashiData.map((rashi) => (
-                          <SelectItem key={rashi.id} value={rashi.id}>
-                            {rashi.name} ({rashi.hindi})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>Nakshatra (नक्षत्र) *</Label>
-                    <Select
-                      value={boyData.nakshatra.toString()}
-                      onValueChange={(value) => setBoyData({ ...boyData, nakshatra: parseInt(value) })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Nakshatra" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {nakshatraData.map((nakshatra) => (
-                          <SelectItem key={nakshatra.id} value={nakshatra.id.toString()}>
-                            {nakshatra.name} ({nakshatra.hindi})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Boy's Details */}
+                  <Card className="border-blue-200">
+                    <CardHeader className="bg-blue-50 rounded-t-lg">
+                      <CardTitle className="flex items-center gap-2 text-blue-700">
+                        <User className="h-5 w-5" />
+                        Boy&apos;s Details (वर)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-6 space-y-4">
+                      <div>
+                        <Label>Name (Optional)</Label>
+                        <Input
+                          placeholder="Enter boy's name"
+                          value={boyData.name}
+                          onChange={(e) => setBoyData({ ...boyData, name: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <Label>Rashi (राशि) *</Label>
+                        <Select
+                          value={boyData.rashi}
+                          onValueChange={(value) => setBoyData({ ...boyData, rashi: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Rashi" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {rashiData.map((rashi) => (
+                              <SelectItem key={rashi.id} value={rashi.id}>
+                                {rashi.name} ({rashi.hindi})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label>Nakshatra (नक्षत्र) *</Label>
+                        <Select
+                          value={boyData.nakshatra.toString()}
+                          onValueChange={(value) => setBoyData({ ...boyData, nakshatra: parseInt(value) })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Nakshatra" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {nakshatraData.map((nakshatra) => (
+                              <SelectItem key={nakshatra.id} value={nakshatra.id.toString()}>
+                                {nakshatra.name} ({nakshatra.hindi})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </CardContent>
+                  </Card>
 
               {/* Girl's Details */}
               <Card className="border-pink-200">
@@ -292,9 +483,63 @@ export default function KundliMilanPage() {
                 </p>
               </CardContent>
             </Card>
+              </TabsContent>
+            </Tabs>
           </motion.div>
-        ) : (
-          /* Results */
+        ) : quickResult ? (
+          /* Quick Result */
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-lg mx-auto"
+          >
+            <Card className="overflow-hidden">
+              <div
+                className={`p-8 text-white text-center ${quickResult.compatible ? "bg-gradient-to-r from-green-500 to-emerald-500" : "bg-gradient-to-r from-orange-500 to-red-500"}`}
+              >
+                <div className="flex items-center justify-center gap-4 mb-4">
+                  <div className="text-center">
+                    <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center text-2xl">👨</div>
+                    <p className="text-sm mt-1 opacity-80">{rashiData.find(r => r.id === boyData.rashi)?.name || "Boy"}</p>
+                  </div>
+                  <Heart className={`h-8 w-8 ${quickResult.compatible ? "fill-white" : ""}`} />
+                  <div className="text-center">
+                    <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center text-2xl">👩</div>
+                    <p className="text-sm mt-1 opacity-80">{rashiData.find(r => r.id === girlData.rashi)?.name || "Girl"}</p>
+                  </div>
+                </div>
+                <div className="text-5xl font-bold mb-2">{quickResult.percentage}%</div>
+                <p className="text-xl font-semibold">
+                  {quickResult.compatible ? "Compatible!" : "Needs Attention"}
+                </p>
+              </div>
+              <CardContent className="pt-6">
+                <p className="text-gray-600 text-center mb-4">{quickResult.message}</p>
+                <div className="flex flex-col gap-3">
+                  <Button variant="outline" onClick={handleReset} className="w-full">
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Check Another
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setQuickResult(null);
+                      setInputMethod("detailed");
+                    }}
+                    className="w-full bg-gradient-to-r from-rose-500 to-orange-500"
+                  >
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    Get Detailed 36-Point Analysis
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <p className="text-center text-sm text-gray-500 mt-4">
+              This is a quick check based on Rashi compatibility only. For accurate results, use the detailed 36-point Ashtakoot analysis.
+            </p>
+          </motion.div>
+        ) : result ? (
+          /* Detailed Results */
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -429,7 +674,7 @@ export default function KundliMilanPage() {
               </Card>
             )}
           </motion.div>
-        )}
+        ) : null}
       </div>
 
       {/* Score Guide */}
